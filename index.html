@@ -1,0 +1,1549 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bitcoin face au quantique : la fen√™tre se ferme ‚Äî 2026</title>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<style>
+  :root {
+    --bg: #FAFAF7;
+    --bg-dark: #0F1115;
+    --surface: #FFFFFF;
+    --text: #1A1A1A;
+    --text-muted: #555;
+    --text-light: #888;
+    --border: #E5E5E5;
+    --danger: #DC2626;
+    --danger-soft: #FEE2E2;
+    --warning: #F59E0B;
+    --warning-soft: #FEF3C7;
+    --info: #2563EB;
+    --info-soft: #DBEAFE;
+    --success: #16A34A;
+    --success-soft: #D1FAE5;
+    --serif: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
+    --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, system-ui, sans-serif;
+    --mono: 'SF Mono', Menlo, Monaco, Consolas, monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--serif);
+    color: var(--text);
+    background: var(--bg);
+    line-height: 1.65;
+    font-size: 18px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ============ HERO ============ */
+  .hero {
+    background: var(--bg-dark);
+    color: #F5F5F5;
+    padding: 100px 24px 80px;
+    text-align: center;
+    border-bottom: 4px solid var(--danger);
+  }
+  .hero .kicker {
+    font-family: var(--sans);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-size: 12px;
+    color: var(--danger);
+    font-weight: 600;
+    margin-bottom: 24px;
+  }
+  .hero h1 {
+    font-family: var(--serif);
+    font-size: clamp(36px, 5.5vw, 64px);
+    line-height: 1.1;
+    font-weight: 700;
+    max-width: 900px;
+    margin: 0 auto 32px;
+    letter-spacing: -0.02em;
+  }
+  .hero .lede {
+    font-family: var(--serif);
+    font-size: clamp(18px, 2vw, 22px);
+    color: #C5C5C5;
+    max-width: 720px;
+    margin: 0 auto 48px;
+    line-height: 1.6;
+  }
+  .hero .countdown {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    justify-content: center;
+    align-items: baseline;
+    background: rgba(220, 38, 38, 0.1);
+    border: 1px solid rgba(220, 38, 38, 0.3);
+    padding: 24px 40px;
+    border-radius: 4px;
+    font-family: var(--sans);
+  }
+  .hero .countdown-item .num {
+    display: block;
+    font-size: 48px;
+    font-weight: 800;
+    color: var(--danger);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .hero .countdown-item .label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: #999;
+    margin-top: 8px;
+  }
+  .hero .meta {
+    margin-top: 48px;
+    font-family: var(--sans);
+    font-size: 13px;
+    color: #888;
+    letter-spacing: 0.05em;
+  }
+
+  /* ============ NAV ============ */
+  nav.toc {
+    position: sticky;
+    top: 0;
+    background: rgba(250, 250, 247, 0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+    z-index: 50;
+    padding: 12px 24px;
+    font-family: var(--sans);
+    font-size: 13px;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  nav.toc a {
+    color: var(--text-muted);
+    text-decoration: none;
+    margin-right: 28px;
+    transition: color 0.2s;
+  }
+  nav.toc a:hover { color: var(--danger); }
+  nav.toc .toc-counter {
+    font-family: var(--mono);
+    color: var(--text-light);
+    margin-right: 4px;
+  }
+
+  /* ============ MAIN ============ */
+  main { max-width: 100%; }
+  section {
+    padding: 80px 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .container {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  .container-wide {
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+  section h2 {
+    font-family: var(--serif);
+    font-size: clamp(28px, 4vw, 40px);
+    line-height: 1.2;
+    font-weight: 700;
+    margin-bottom: 16px;
+    letter-spacing: -0.02em;
+  }
+  section h2 .section-num {
+    display: block;
+    font-family: var(--sans);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--text-light);
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  section h3 {
+    font-family: var(--sans);
+    font-size: 20px;
+    font-weight: 700;
+    margin-top: 40px;
+    margin-bottom: 16px;
+    color: var(--text);
+  }
+  section .intro {
+    font-family: var(--serif);
+    font-size: 21px;
+    color: var(--text-muted);
+    margin-bottom: 32px;
+    font-style: italic;
+    border-left: 3px solid var(--danger);
+    padding-left: 20px;
+  }
+  section p {
+    margin-bottom: 18px;
+  }
+  section strong { font-weight: 700; color: var(--text); }
+  section em { font-style: italic; }
+  section a { color: var(--danger); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+
+  /* ============ CALLOUTS ============ */
+  .callout {
+    margin: 32px 0;
+    padding: 24px 28px;
+    border-radius: 4px;
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  .callout-danger { background: var(--danger-soft); border-left: 4px solid var(--danger); }
+  .callout-warning { background: var(--warning-soft); border-left: 4px solid var(--warning); }
+  .callout-info { background: var(--info-soft); border-left: 4px solid var(--info); }
+  .callout-success { background: var(--success-soft); border-left: 4px solid var(--success); }
+  .callout strong { display: block; margin-bottom: 6px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+  /* ============ DATA / NUMBERS ============ */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin: 32px 0;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 24px;
+    text-align: left;
+  }
+  .stat-card .stat-label {
+    font-family: var(--sans);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-light);
+    margin-bottom: 8px;
+  }
+  .stat-card .stat-value {
+    font-family: var(--sans);
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .stat-card .stat-suffix {
+    font-size: 16px;
+    color: var(--text-muted);
+    font-weight: 500;
+    margin-left: 4px;
+  }
+  .stat-card .stat-note {
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 8px;
+  }
+
+  /* ============ CRYPTO FLOW VISUAL ============ */
+  .crypto-flow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 12px;
+    margin: 32px 0;
+    font-family: var(--sans);
+  }
+  .crypto-step {
+    flex: 1;
+    min-width: 180px;
+    background: var(--surface);
+    border: 2px solid var(--border);
+    padding: 20px;
+    position: relative;
+  }
+  .crypto-step .step-num {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-light);
+    margin-bottom: 8px;
+  }
+  .crypto-step .step-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .crypto-step .step-desc {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+  .crypto-step.private { border-color: var(--danger); }
+  .crypto-step.public { border-color: var(--warning); }
+  .crypto-step.address { border-color: var(--info); }
+  .crypto-arrow {
+    align-self: center;
+    font-size: 24px;
+    color: var(--text-light);
+  }
+
+  /* ============ INTERACTIVE PANELS ============ */
+  .interactive-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 32px;
+    margin: 40px 0;
+  }
+  .interactive-panel .panel-title {
+    font-family: var(--sans);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--danger);
+    font-weight: 700;
+    margin-bottom: 16px;
+  }
+  .interactive-panel .panel-subtitle {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    line-height: 1.3;
+  }
+  .controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px;
+    margin-bottom: 32px;
+    padding: 20px;
+    background: #F5F5F0;
+    border-radius: 4px;
+  }
+  .control {
+    font-family: var(--sans);
+  }
+  .control label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+  .control .value {
+    color: var(--danger);
+    font-family: var(--mono);
+    font-weight: 700;
+    margin-left: 6px;
+  }
+  .control input[type=range] {
+    width: 100%;
+    accent-color: var(--danger);
+  }
+  .control .help {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 6px;
+    line-height: 1.4;
+  }
+  .preset-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+  .preset-btn {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 16px;
+    border: 1px solid var(--border);
+    background: white;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.15s;
+  }
+  .preset-btn:hover { border-color: var(--text); }
+  .preset-btn.active { background: var(--text); color: white; border-color: var(--text); }
+  .preset-btn.preset-conservative.active { background: var(--success); border-color: var(--success); }
+  .preset-btn.preset-central.active { background: var(--warning); border-color: var(--warning); color: #000; }
+  .preset-btn.preset-aggressive.active { background: var(--danger); border-color: var(--danger); }
+
+  .chart-container {
+    width: 100%;
+    height: 420px;
+    margin-bottom: 8px;
+  }
+  .chart-caption {
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--text-muted);
+    text-align: center;
+    margin-bottom: 24px;
+    font-style: italic;
+  }
+
+  .result-box {
+    background: var(--bg-dark);
+    color: white;
+    padding: 24px 28px;
+    border-radius: 4px;
+    margin-top: 24px;
+    font-family: var(--sans);
+  }
+  .result-box .result-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .result-box .result-line:last-child { border-bottom: none; }
+  .result-box .result-label { font-size: 14px; color: #BBB; }
+  .result-box .result-value { font-size: 24px; font-weight: 800; color: var(--danger); font-family: var(--mono); }
+  .result-box .result-value.positive { color: #4ADE80; }
+  .result-box .result-value.warning { color: var(--warning); }
+
+  /* ============ CASCADE TIMELINE ============ */
+  .cascade-timeline {
+    margin: 40px 0;
+    position: relative;
+  }
+  .cascade-phase {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 24px;
+    padding: 24px 0;
+    border-top: 1px solid var(--border);
+    align-items: start;
+  }
+  .cascade-phase:last-child { border-bottom: 1px solid var(--border); }
+  .cascade-time {
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 700;
+    color: white;
+    background: var(--danger);
+    padding: 6px 12px;
+    text-align: center;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    align-self: start;
+  }
+  .cascade-phase.severity-low .cascade-time { background: var(--info); }
+  .cascade-phase.severity-mid .cascade-time { background: var(--warning); color: #000; }
+  .cascade-phase.severity-high .cascade-time { background: var(--danger); }
+  .cascade-phase.severity-extreme .cascade-time { background: #7C0A02; }
+
+  .cascade-content h4 {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .cascade-content p {
+    font-size: 17px;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+  .cascade-content .cascade-numbers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 12px;
+    padding: 12px 16px;
+    background: var(--bg);
+    border-radius: 4px;
+    font-family: var(--mono);
+    font-size: 13px;
+  }
+  .cascade-content .cascade-numbers span strong {
+    color: var(--danger);
+    margin-right: 4px;
+  }
+
+  /* ============ ACTORS GRID ============ */
+  .actors-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin: 40px 0;
+  }
+  .actor-card {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 24px;
+    border-top: 4px solid var(--danger);
+  }
+  .actor-card h4 {
+    font-family: var(--sans);
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .actor-card p {
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 0;
+  }
+
+  /* ============ FINAL CTA ============ */
+  .final-cta {
+    background: var(--bg-dark);
+    color: white;
+    padding: 100px 24px;
+    text-align: center;
+  }
+  .final-cta h2 { color: white; }
+  .final-cta .container p {
+    font-family: var(--serif);
+    font-size: 22px;
+    line-height: 1.6;
+    color: #DDD;
+    margin-bottom: 24px;
+  }
+  .final-cta .container p strong {
+    color: white;
+    font-weight: 700;
+  }
+  .final-cta .urgent-line {
+    border-top: 1px solid rgba(255,255,255,0.2);
+    margin-top: 48px;
+    padding-top: 32px;
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--danger);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-weight: 600;
+  }
+
+  /* ============ FOOTER ============ */
+  footer {
+    background: #0A0B0E;
+    color: #888;
+    padding: 60px 24px;
+    font-family: var(--sans);
+    font-size: 13px;
+  }
+  footer .container { max-width: 760px; }
+  footer h4 {
+    color: white;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 16px;
+  }
+  footer ul { list-style: none; padding-left: 0; }
+  footer li { margin-bottom: 8px; line-height: 1.5; }
+  footer a { color: #BBB; text-decoration: underline; }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 640px) {
+    body { font-size: 17px; }
+    section { padding: 60px 20px; }
+    .crypto-flow { flex-direction: column; }
+    .crypto-arrow { transform: rotate(90deg); margin: 0 auto; }
+    .cascade-phase { grid-template-columns: 1fr; gap: 12px; }
+    .cascade-time { display: inline-block; align-self: flex-start; }
+    .interactive-panel { padding: 20px; }
+    .controls { padding: 16px; gap: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <div class="kicker">Alerte cryptographique ¬∑ Avril 2026</div>
+  <h1>Bitcoin face au quantique :<br>la fen√™tre se ferme<br>plus vite qu'on ne le croit</h1>
+  <p class="lede">
+    L'ordinateur capable de vider 5 millions de bitcoins en quelques heures n'existe pas encore. Il existera. Probablement avant 2035. Peut-√™tre avant 2030. Et Bitcoin, lui, a besoin d'au moins 10 ans pour se d√©fendre.<br><strong style="color: #fff;">Fais le calcul.</strong>
+  </p>
+  <div class="countdown">
+    <div class="countdown-item">
+      <span class="num" id="hero-years-central">8</span>
+      <span class="label">ann√©es avant CRQC<br>(sc√©nario central)</span>
+    </div>
+    <div class="countdown-item">
+      <span class="num">5M</span>
+      <span class="label">BTC vuln√©rables<br>aux attaques de Shor</span>
+    </div>
+    <div class="countdown-item">
+      <span class="num">$500B+</span>
+      <span class="label">de valeur expos√©e<br>(au cours actuel)</span>
+    </div>
+    <div class="countdown-item">
+      <span class="num">~10</span>
+      <span class="label">ann√©es n√©cessaires<br>pour migrer Bitcoin</span>
+    </div>
+  </div>
+  <div class="meta">L'inaction est un choix. Et c'est le pire.</div>
+</header>
+
+<!-- ============ NAV ============ -->
+<nav class="toc">
+  <a href="#crypto"><span class="toc-counter">01</span> Cryptographie</a>
+  <a href="#shor"><span class="toc-counter">02</span> La menace</a>
+  <a href="#state"><span class="toc-counter">03</span> 2026</a>
+  <a href="#model"><span class="toc-counter">04</span> Mod√®le CRQC</a>
+  <a href="#cascade"><span class="toc-counter">05</span> Cascade</a>
+  <a href="#window"><span class="toc-counter">06</span> Fen√™tre d'action</a>
+  <a href="#cta"><span class="toc-counter">07</span> Appel</a>
+</nav>
+
+<main>
+
+<!-- ============ SECTION 1 ‚Äî CRYPTO ============ -->
+<section id="crypto">
+  <div class="container">
+    <h2><span class="section-num">01 ‚Äî Comprendre la cible</span>Une seule serrure prot√®ge tes bitcoins</h2>
+
+    <p class="intro">
+      Imagine un coffre. Une seule cl√© l'ouvre. Cette cl√© est dans ta poche, et nulle part ailleurs.
+    </p>
+
+    <p>
+      Bitcoin marche pareil. Tu autorises un transfert en signant avec ta <strong>cl√© priv√©e</strong> (le secret), le r√©seau v√©rifie avec ta <strong>cl√© publique</strong> (d√©riv√©e du secret), et le tout pointe vers une <strong>adresse</strong> (la fa√ßade visible). La signature s'appelle <strong>ECDSA</strong>. C'est tout ce qui emp√™che un inconnu de d√©penser tes bitcoins.
+    </p>
+
+    <div class="crypto-flow">
+      <div class="crypto-step private">
+        <div class="step-num">Niveau 1</div>
+        <div class="step-title">Cl√© priv√©e</div>
+        <div class="step-desc">Le secret. 256 bits al√©atoires. Personne ne doit jamais la voir. Elle reste sur ton hardware wallet.</div>
+      </div>
+      <div class="crypto-arrow">‚Üí</div>
+      <div class="crypto-step public">
+        <div class="step-num">Niveau 2</div>
+        <div class="step-title">Cl√© publique</div>
+        <div class="step-desc">D√©riv√©e de la cl√© priv√©e. Elle appara√Æt dans la blockchain d√®s la premi√®re signature. Vuln√©rable √† Shor.</div>
+      </div>
+      <div class="crypto-arrow">‚Üí</div>
+      <div class="crypto-step address">
+        <div class="step-num">Niveau 3</div>
+        <div class="step-title">Adresse</div>
+        <div class="step-desc">Hash de la cl√© publique (SHA-256 + RIPEMD-160). Visible publiquement. Prot√©g√©e par un second rempart.</div>
+      </div>
+    </div>
+
+    <p>
+      Le pi√®ge tient en une phrase : <strong>√† la seconde o√π tu signes ta premi√®re transaction, ta cl√© publique appara√Æt pour toujours sur la blockchain</strong>. √Ä ce moment-l√†, ta protection ne tient plus qu'√† ECDSA. C'est exactement ce que Shor casse.
+    </p>
+
+    <div class="callout callout-danger">
+      <strong>Le chiffre qui change tout</strong>
+      Sur les ~19,7 millions de bitcoins en circulation, <strong>5 millions sont d√©j√† √† d√©couvert aujourd'hui</strong>. Les ~1,1 million de Satoshi en adresses qui exposent directement la cl√© publique. Plus toutes les adresses r√©utilis√©es en 16 ans. Au cours actuel : <strong>plus de 500 milliards de dollars n'attendent que l'ordinateur capable de les saisir</strong>.
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECTION 2 ‚Äî SHOR ============ -->
+<section id="shor">
+  <div class="container">
+    <h2><span class="section-num">02 ‚Äî La menace</span>Shor : l'algorithme qui transforme l'√¢ge de l'univers en quelques heures</h2>
+
+    <p class="intro">
+      Pas besoin d'un arsenal. Une seule arme suffit. Elle existe sur papier depuis 1994. Le hardware pour la faire tourner sort de l'ombre maintenant.
+    </p>
+
+    <p>
+      En 1994, Peter Shor publie un algorithme qui, tournant sur un ordinateur quantique suffisamment puissant, peut factoriser de grands nombres et r√©soudre le probl√®me du logarithme discret. Concr√®tement : <strong>√† partir d'une cl√© publique ECDSA, retrouver la cl√© priv√©e correspondante en heures</strong>.
+    </p>
+
+    <p>
+      C'est le seul outil dont a besoin un attaquant pour vider les 5 millions de BTC vuln√©rables. Pas besoin de hacker un wallet. Pas besoin de phishing. Il signe lui-m√™me les transactions √† ta place, l√©galement aux yeux du protocole.
+    </p>
+
+    <div class="stat-grid">
+      <div class="stat-card" style="border-left: 4px solid var(--danger);">
+        <div class="stat-label">Algorithme de Shor sur ECDSA</div>
+        <div class="stat-value">Catastrophe</div>
+        <div class="stat-note">Casse compl√®tement la signature. Toute cl√© publique expos√©e devient vuln√©rable.</div>
+      </div>
+      <div class="stat-card" style="border-left: 4px solid var(--warning);">
+        <div class="stat-label">Algorithme de Grover sur SHA-256</div>
+        <div class="stat-value">G√©rable</div>
+        <div class="stat-note">Divise par 2 la s√©curit√© (de 2¬≤‚Åµ‚Å∂ √† 2¬π¬≤‚Å∏). Reste hors de port√©e. Le mining est sauv√©.</div>
+      </div>
+    </div>
+
+    <p>
+      C'est important : la menace quantique sur Bitcoin n'est pas sym√©trique. Le mining (bas√© sur SHA-256) reste essentiellement s√ªr ‚Äî Grover offre seulement un gain quadratique, et 2¬π¬≤‚Å∏ d'op√©rations reste astronomique. <strong>Le seul vrai danger, c'est Shor sur les signatures</strong>. Mais c'est un danger total.
+    </p>
+
+    <p>
+      Pour appliquer Shor √† secp256k1, on a besoin d'un ordinateur quantique disposant d'un certain nombre de <strong>qubits logiques</strong> ‚Äî c'est-√†-dire des qubits suffisamment fiables, apr√®s correction d'erreurs, pour ex√©cuter un long algorithme sans d√©river. Les estimations acad√©miques convergent vers une fourchette : entre <strong>2 330 et 20 000 qubits logiques</strong>, selon la dur√©e d'attaque tol√©r√©e et l'efficacit√© de l'algorithme impl√©ment√© (Roetteler 2017, Webber 2022, Gidney 2025).
+    </p>
+
+    <p>
+      Reste √† savoir : o√π en est-on en 2026 ?
+    </p>
+  </div>
+</section>
+
+<!-- ============ SECTION 3 ‚Äî STATE 2026 ============ -->
+<section id="state">
+  <div class="container">
+    <h2><span class="section-num">03 ‚Äî O√π on en est</span>2026 : la course aux qubits acc√©l√®re, l'IA met le turbo</h2>
+
+    <p class="intro">
+      Le grand public lit "ordinateur quantique" et imagine 1990. La r√©alit√© 2026 est tr√®s diff√©rente.
+    </p>
+
+    <p>
+      Le hardware quantique sort de l'√®re du jouet. Quelques chiffres pour situer :
+    </p>
+
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-label">IBM Condor (2023)</div>
+        <div class="stat-value">1 121<span class="stat-suffix">qubits physiques</span></div>
+        <div class="stat-note">Roadmap Blue Jay : ~10 000 qubits vis√©s en 2026-2027.</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Google Willow (d√©c. 2024)</div>
+        <div class="stat-value">105<span class="stat-suffix">qubits</span></div>
+        <div class="stat-note">Premier processeur "sous le seuil" pour la correction d'erreurs : √©tape historique.</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Atom Computing</div>
+        <div class="stat-value">1 180<span class="stat-suffix">qubits neutres</span></div>
+        <div class="stat-note">Architecture neutral atom, scalabilit√© prometteuse.</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Quantinuum (2025)</div>
+        <div class="stat-value">~12<span class="stat-suffix">qubits logiques</span></div>
+        <div class="stat-note">D√©monstration de qubits logiques fault-tolerant avec magic state distillation.</div>
+      </div>
+    </div>
+
+    <h3>La distinction qui change tout : physiques vs logiques</h3>
+    <p>
+      Un qubit physique est bruyant, instable, fait des erreurs. Pour ex√©cuter un algorithme long et pr√©cis comme Shor, on regroupe ~1 000 qubits physiques pour former 1 qubit logique fiable. C'est ce qu'on appelle la <strong>correction d'erreurs quantique</strong>.
+    </p>
+
+    <p>
+      En 2026, on est √† environ <strong>20 √† 50 qubits logiques</strong> op√©rationnels dans les meilleurs labs. On est loin des 2 330 n√©cessaires. Na√Øvement, on se dit : "on a le temps". Sauf que la croissance n'est pas lin√©aire. Elle est exponentielle. Et l'IA est en train de la rendre encore plus rapide.
+    </p>
+
+    <h3>L'IA, l'acc√©l√©rateur sous-estim√©</h3>
+
+    <p>
+      C'est l'angle qu'on lit nulle part dans les estimations "consensus" sur l'arriv√©e du CRQC. Et c'est probablement le plus important.
+    </p>
+
+    <p>
+      <strong>1. Correction d'erreurs.</strong> En novembre 2024, DeepMind publie AlphaQubit ‚Äî un syst√®me d'IA qui d√©code les erreurs sur les qubits 30% mieux que les meilleurs algorithmes classiques. Or, la correction d'erreurs est <em>exactement</em> le goulot d'√©tranglement actuel. Une am√©lioration de 30% sur le d√©codage permet d'utiliser moins de qubits physiques par qubit logique.
+    </p>
+
+    <p>
+      <strong>2. D√©couverte d'algorithmes.</strong> L'estimation de Gidney (Google, 2025) ram√®ne le nombre de qubits n√©cessaires pour casser RSA-2048 √† moins d'1 million de qubits physiques en moins d'1 semaine ‚Äî une r√©duction d'un facteur 100 par rapport aux estimations de 2019. Ces optimisations sont de plus en plus assist√©es par IA.
+    </p>
+
+    <p>
+      <strong>3. Design hardware.</strong> L'optimisation des architectures de chips quantiques (mat√©riaux, g√©om√©tries, cryog√©nie) est un probl√®me combinatoire massif o√π les outils IA ‚Äî notamment ceux issus de la chimie quantique computationnelle ‚Äî acc√©l√®rent le cycle de R&D.
+    </p>
+
+    <div class="callout callout-warning">
+      <strong>L'effet compos√©</strong>
+      Le temps de doublement des qubits logiques, historiquement de l'ordre de 1,5 √† 2 ans, pourrait passer √† 9-12 mois sous l'effet de l'IA. C'est ce param√®tre qui n'appara√Æt pas dans les courbes "consensus" et qui change tout. Joue avec le mod√®le ci-dessous pour le constater.
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECTION 4 ‚Äî MODEL CRQC ============ -->
+<section id="model">
+  <div class="container-wide">
+    <div style="max-width: 760px; margin: 0 auto;">
+      <h2><span class="section-num">04 ‚Äî Mod√®le interactif</span>Quand arrive le CRQC ? Joue avec les param√®tres</h2>
+      <p class="intro">
+        Trois variables, trois sc√©narios. La courbe est exponentielle dans tous les cas ‚Äî la seule question est la pente.
+      </p>
+      <p>
+        On mod√©lise la croissance des qubits logiques disponibles ainsi :
+      </p>
+      <p style="font-family: var(--mono); background: #F5F5F0; padding: 16px; border-radius: 4px; font-size: 15px; text-align: center;">
+        Q(t) = Q‚ÇÄ √ó 2^((s + Œ±¬∑s¬≤/2) / œÑ), &nbsp; avec s = t ‚àí 2026
+      </p>
+      <p>
+        O√π <strong>œÑ</strong> est le temps de doublement initial (en ann√©es), <strong>Œ±</strong> le facteur d'acc√©l√©ration IA (r√©duit œÑ chaque ann√©e), et <strong>Q‚ÇÄ ‚âà 20</strong> qubits logiques en 2026. Le seuil pour casser ECDSA secp256k1 est fix√© √† <strong>2 330 qubits logiques</strong> (estimation basse de Roetteler 2017).
+      </p>
+    </div>
+
+    <div class="interactive-panel">
+      <div class="panel-title">Mod√®le 1 ‚Äî Croissance des qubits logiques</div>
+      <div class="panel-subtitle">Le seuil de 2 330 qubits logiques marque l'arriv√©e du premier CRQC capable de casser secp256k1.</div>
+
+      <div class="preset-buttons">
+        <button class="preset-btn preset-conservative" onclick="setPreset('conservative')">Conservateur (consensus acad√©mique)</button>
+        <button class="preset-btn preset-central active" onclick="setPreset('central')">Central (avec IA mod√©r√©e)</button>
+        <button class="preset-btn preset-aggressive" onclick="setPreset('aggressive')">Agressif (forte acc√©l√©ration IA)</button>
+      </div>
+
+      <div class="controls">
+        <div class="control">
+          <label>Temps de doublement œÑ <span class="value" id="tau-val">1.5 ans</span></label>
+          <input type="range" id="tau-slider" min="0.5" max="3" step="0.1" value="1.5" oninput="updateModel()">
+          <div class="help">Combien d'ann√©es pour doubler le nombre de qubits logiques. Plus court = plus rapide.</div>
+        </div>
+        <div class="control">
+          <label>Acc√©l√©ration IA Œ± <span class="value" id="alpha-val">0.15</span></label>
+          <input type="range" id="alpha-slider" min="0" max="0.6" step="0.01" value="0.15" oninput="updateModel()">
+          <div class="help">√Ä quelle vitesse l'IA r√©duit le temps de doublement chaque ann√©e. 0 = pas d'effet IA.</div>
+        </div>
+        <div class="control">
+          <label>Qubits logiques 2026 <span class="value" id="q0-val">20</span></label>
+          <input type="range" id="q0-slider" min="5" max="100" step="5" value="20" oninput="updateModel()">
+          <div class="help">Estimation actuelle des qubits logiques op√©rationnels. La fourchette "r√©elle" est 10-50.</div>
+        </div>
+      </div>
+
+      <div id="qubit-chart" class="chart-container"></div>
+      <div class="chart-caption">√âchelle logarithmique. La ligne rouge horizontale indique le seuil pour casser ECDSA. L'intersection donne l'ann√©e d'arriv√©e du CRQC.</div>
+
+      <div class="result-box">
+        <div class="result-line">
+          <div class="result-label">Ann√©e d'arriv√©e du CRQC (seuil 2 330 qubits logiques)</div>
+          <div class="result-value" id="crqc-year">2034</div>
+        </div>
+        <div class="result-line">
+          <div class="result-label">Ann√©es restantes depuis 2026</div>
+          <div class="result-value warning" id="crqc-years-left">8 ans</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="interactive-panel">
+      <div class="panel-title">Mod√®le 2 ‚Äî Probabilit√© d'apparition du CRQC par ann√©e</div>
+      <div class="panel-subtitle">Vue probabiliste : trois sc√©narios superpos√©s. La courbe est volontairement mod√©lis√©e par une logistique pour int√©grer l'incertitude.</div>
+
+      <div id="probability-chart" class="chart-container"></div>
+      <div class="chart-caption">Probabilit√© cumul√©e qu'un CRQC capable de casser secp256k1 existe avant l'ann√©e t, par sc√©nario.</div>
+
+      <div class="result-box">
+        <div class="result-line">
+          <div class="result-label">Conservateur ‚Äî m√©diane</div>
+          <div class="result-value positive">2040</div>
+        </div>
+        <div class="result-line">
+          <div class="result-label">Central ‚Äî m√©diane</div>
+          <div class="result-value warning">2034</div>
+        </div>
+        <div class="result-line">
+          <div class="result-label">Agressif ‚Äî m√©diane</div>
+          <div class="result-value">2030</div>
+        </div>
+        <div class="result-line">
+          <div class="result-label">P(CRQC ‚â§ 2032) ‚Äî moyenne pond√©r√©e</div>
+          <div class="result-value">~28%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECTION 5 ‚Äî CASCADE ============ -->
+<section id="cascade" style="background: linear-gradient(180deg, #FAFAF7 0%, #FEF2F2 100%);">
+  <div class="container">
+    <h2><span class="section-num">05 ‚Äî Le sc√©nario c≈ìur</span>Si on n'agit pas √† temps : 30 jours pour effondrer un √©cosyst√®me de 4 trillions</h2>
+
+    <p class="intro">
+      Tout ce qui pr√©c√®de reste th√©orique tant qu'on ne d√©roule pas le sc√©nario concret. Voici ce qui se passe, heure par heure, jour par jour, si un CRQC appara√Æt avant que Bitcoin ait migr√© vers du post-quantique.
+    </p>
+
+    <p>
+      Le d√©clencheur n'a pas besoin d'√™tre annonc√©. Il s'auto-r√©v√®le. Une transaction sortant d'une adresse "Satoshi-era" ‚Äî dormante depuis 2010 ‚Äî est un √©v√©nement qu'aucun mempool watcher ne rate. Ce qui suit est une cascade qui s'auto-amplifie.
+    </p>
+
+    <div class="cascade-timeline">
+
+      <div class="cascade-phase severity-low">
+        <div class="cascade-time">Heure 0</div>
+        <div class="cascade-content">
+          <h4>Une adresse Satoshi-era bouge</h4>
+          <p>Une transaction sort d'une adresse P2PK dormante depuis 2010. Plusieurs milliers de BTC. Les bots de surveillance la d√©tectent en secondes. X / Twitter explose : "Satoshi est-il revenu ?"</p>
+          <div class="cascade-numbers">
+            <span><strong>D√©tection :</strong> &lt; 30 secondes</span>
+            <span><strong>Hypoth√®ses initiales :</strong> retour Satoshi, leak de cl√©, ou attaque</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cascade-phase severity-mid">
+        <div class="cascade-time">Heure 6</div>
+        <div class="cascade-content">
+          <h4>Le pattern devient ind√©niable</h4>
+          <p>D'autres adresses early bougent simultan√©ment, depuis des wallets sans aucun lien entre eux. Aucune communication de "Satoshi". Le pattern est coh√©rent avec une attaque automatis√©e. Les premi√®res analyses cryptographiques sortent.</p>
+          <div class="cascade-numbers">
+            <span><strong>Adresses touch√©es :</strong> 50-200</span>
+            <span><strong>BTC vol√©s :</strong> 50 000 - 200 000</span>
+            <span><strong>BTC : ‚àí15% √† ‚àí25%</strong></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cascade-phase severity-high">
+        <div class="cascade-time">Jour 1</div>
+        <div class="cascade-content">
+          <h4>Confirmation publique : ECDSA est cass√©</h4>
+          <p>Les cryptographes du MIT, Stanford, Inria, et l'√©quipe Google Quantum AI confirment publiquement : le pattern n'est explicable que par une attaque Shor en environnement op√©rationnel. Quelqu'un, quelque part, dispose d'un CRQC. L'identit√© de l'attaquant ‚Äî √âtat, groupe priv√©, agence ‚Äî devient secondaire face √† l'urgence technique.</p>
+          <div class="cascade-numbers">
+            <span><strong>Confirmation officielle :</strong> J+18 √† J+24h</span>
+            <span><strong>BTC : ‚àí40% √† ‚àí55%</strong></span>
+            <span><strong>Volume 24h :</strong> $300B+</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cascade-phase severity-extreme">
+        <div class="cascade-time">Jour 1-3</div>
+        <div class="cascade-content">
+          <h4>Le pi√®ge vicieux : la course aux signatures</h4>
+          <p>Les d√©tenteurs essaient de migrer en urgence vers des adresses post-quantique. Mais voici le pi√®ge qu'on n'a pas suffisamment expliqu√© au public : <strong>pour migrer, il faut signer une transaction. Et signer expose la cl√© publique.</strong> Avec un CRQC actif, cette cl√© publique peut √™tre cass√©e pendant les ~10 minutes entre ton broadcast et la confirmation. L'attaquant r√©-√©crit ta transaction et envoie tes BTC vers son adresse.</p>
+          <p>R√©sultat : course aux fees. Pour passer dans le bloc suivant face √† 50M utilisateurs paniqu√©s, il faut payer des centaines de dollars par transaction. Le mempool atteint 500MB. Les blocs sont satur√©s pendant des semaines.</p>
+          <div class="cascade-numbers">
+            <span><strong>Fees moyens :</strong> $200-800 par tx</span>
+            <span><strong>Mempool :</strong> &gt; 500 MB</span>
+            <span><strong>BTC perdus en mempool :</strong> ind√©termin√©, mais massif</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cascade-phase severity-extreme">
+        <div class="cascade-time">Jour 2-4</div>
+        <div class="cascade-content">
+          <h4>Contagion stablecoins : le bank run</h4>
+          <p>USDT (~$140B en 2026) subit un bank run. Les redemptions explosent ‚Äî $20 √† $50B par jour, contre une capacit√© op√©rationnelle de l'ordre du milliard. Tether suspend les conversions. <strong>USDT depeg √† $0.80‚Äì$0.85</strong>. La panique s'auto-alimente : les users qui d√©tiennent du USDT veulent sortir avant que le depeg ne s'aggrave.</p>
+          <p>USDC tient mieux gr√¢ce √† des r√©serves plus propres mais Coinbase est frapp√© via ses ETFs et son trading book ‚Äî premier depeg √† $0.95 puis recovery. DAI, partiellement collat√©ralis√© en BTC/ETH wrapped, devient sous-collat√©ralis√© : liquidations en cha√Æne sur Aave et Compound. USDe (delta-neutral via funding rates) est obliter√© en quelques heures.</p>
+          <div class="cascade-numbers">
+            <span><strong>USDT depeg :</strong> ‚àí15% √† ‚àí25%</span>
+            <span><strong>DAI :</strong> sous-collat√©ralis√©, gel temporaire</span>
+            <span><strong>Liquidations DeFi :</strong> $30-80B en 72h</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cascade-phase severity-extreme">
+        <div class="cascade-time">Jour 3-5</div>
+        <div class="cascade-content">
+          <h4>L'angle mort : tout le crypto tombe en m√™me temps</h4>
+          <p>Voici le point critique sous-estim√© dans presque tous les articles sur le risque quantique : <strong>Bitcoin n'est pas seul</strong>. Ethereum, Solana, Cardano, BNB, Polkadot, Avalanche ‚Äî la quasi-totalit√© des blockchains majeures utilisent des signatures ECDSA, EdDSA, ou des variantes bas√©es sur le m√™me probl√®me math√©matique.</p>
+          <p>Un CRQC qui casse Bitcoin casse simultan√©ment <strong>tout le crypto</strong>. Pas s√©quentiellement : en parall√®le. ETH chute de 70-80%. Les wrapped tokens (WBTC, WETH) deviennent des bombes √† retardement on-chain. La market cap totale crypto passe de ~$4T √† ~$700B en une semaine.</p>
+          <div class="cascade-numbers">
+            <span><strong>ETH :</strong> ‚àí70% √† ‚àí80%</span>
+            <span><strong>Total market cap :</strong> $4T ‚Üí $700B-$1T</span>
+            <span><strong>WBTC :</strong> tendance vers $0</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cascade-phase severity-high">
+        <div class="cascade-time">Jour 5-10</div>
+        <div class="cascade-content">
+          <h4>Contagion tradfi : choc sectoriel s√©v√®re</h4>
+          <p>ETFs Bitcoin (BlackRock IBIT, Fidelity, etc., ~$150B AUM cumul√©s en 2026) gel√©s et en pertes massives. MicroStrategy (>600 000 BTC) en faillite probable. Les banques crypto-friendly fragilis√©es (rappel Silvergate 2023). Coinbase, Kraken, Binance suspendent les retraits en cha√Æne ‚Äî gestion de la liquidit√© impossible avec des actifs qui s'effondrent en heures.</p>
+          <p>Le Nasdaq l√¢che 6-10% sur la semaine sur l'effet psychologique tech. Pas de risque syst√©mique global ($1-2T de pertes sur $120T de tradfi mondial), mais <strong>choc sectoriel s√©v√®re</strong>, faillites bancaires r√©gionales aux US, et coup d'arr√™t sur 5+ ans pour l'industrie crypto.</p>
+          <div class="cascade-numbers">
+            <span><strong>Pertes ETF BTC :</strong> $100-130B</span>
+            <span><strong>Faillites probables :</strong> MSTR + 3-5 banques</span>
+            <span><strong>Effet Nasdaq :</strong> ‚àí6% √† ‚àí10%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cascade-phase severity-mid">
+        <div class="cascade-time">Mois 1-3</div>
+        <div class="cascade-content">
+          <h4>Hard fork PQC d'urgence</h4>
+          <p>Bitcoin Core publie un hard fork post-quantique d'urgence ‚Äî d'autant plus rapide si BIP-360 ou son √©quivalent √©tait d√©j√† en phase avanc√©e. Migration forc√©e. D√©bat √©thique brutal sur les coins non migr√©s (Satoshi era, addresses oubli√©es) : vol√©s ou gel√©s via consensus social ? Aucune bonne r√©ponse.</p>
+          <p>Sch√©mas PQC retenus : probablement SLH-DSA (SPHINCS+) ou ML-DSA (Dilithium), normalis√©s NIST. Tradeoff : signatures plus lourdes, fees plus √©lev√©s en r√©gime nominal, mais r√©sistantes √† Shor.</p>
+          <div class="cascade-numbers">
+            <span><strong>Coins non migrables :</strong> ~3-5M BTC (perdus, oubli√©s)</span>
+            <span><strong>Fork activation :</strong> 4-12 semaines</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cascade-phase severity-low">
+        <div class="cascade-time">Mois 6-24</div>
+        <div class="cascade-content">
+          <h4>Recovery ‚Äî partielle, lente, marqu√©e</h4>
+          <p>Bitcoin survit techniquement, mais le r√©cit "or num√©rique" est durablement entam√©. Floor envisageable entre $5k et $20k. Les institutionnels arriv√©s en 2024-2025 ont mat√©rialis√© 80-95% de pertes. Recovery possible sur 5-10 ans, conditionn√©e √† la stabilit√© du nouveau r√©gime PQC et √† la reconstruction patiente de la confiance. Ce n'est pas garanti.</p>
+          <div class="cascade-numbers">
+            <span><strong>Floor envisageable :</strong> $5k-$20k</span>
+            <span><strong>Horizon recovery :</strong> 5-10 ans, sans garantie</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="interactive-panel" style="margin-top: 60px;">
+      <div class="panel-title">Mod√®le 3 ‚Äî Simulateur de cascade</div>
+      <div class="panel-subtitle">Estime l'impact prix selon ce que l'attaquant dump et en combien de jours.</div>
+
+      <div class="controls">
+        <div class="control">
+          <label>Prix BTC initial <span class="value" id="price-val">$100k</span></label>
+          <input type="range" id="price-slider" min="50000" max="200000" step="5000" value="100000" oninput="updateCascade()">
+          <div class="help">Cours BTC au moment de l'√©v√©nement.</div>
+        </div>
+        <div class="control">
+          <label>% des BTC vuln√©rables dump√©s <span class="value" id="dump-val">60%</span></label>
+          <input type="range" id="dump-slider" min="10" max="100" step="5" value="60" oninput="updateCascade()">
+          <div class="help">Quel pourcentage des 5M BTC vuln√©rables l'attaquant arrive effectivement √† liquider sur les march√©s.</div>
+        </div>
+        <div class="control">
+          <label>√âtalement du dump <span class="value" id="days-val">7 jours</span></label>
+          <input type="range" id="days-slider" min="1" max="30" step="1" value="7" oninput="updateCascade()">
+          <div class="help">Sur combien de jours le dump est √©tal√©. Plus court = impact plus brutal.</div>
+        </div>
+      </div>
+
+      <div class="result-box">
+        <div class="result-line">
+          <div class="result-label">Prix BTC apr√®s cascade</div>
+          <div class="result-value" id="final-price">$15 000</div>
+        </div>
+        <div class="result-line">
+          <div class="result-label">Drawdown BTC</div>
+          <div class="result-value" id="pct-drop">‚àí85%</div>
+        </div>
+        <div class="result-line">
+          <div class="result-label">Depeg USDT estim√©</div>
+          <div class="result-value warning" id="usdt-depeg">‚àí18%</div>
+        </div>
+        <div class="result-line">
+          <div class="result-label">Pertes totales crypto market cap</div>
+          <div class="result-value" id="total-loss">$3,4 T</div>
+        </div>
+      </div>
+      <p style="font-family: var(--sans); font-size: 13px; color: var(--text-muted); margin-top: 16px; font-style: italic;">
+        Mod√®le simplifi√© inspir√© de Kyle's lambda + facteur de r√©flexivit√©. Suppose 5M BTC vuln√©rables, volume normal $30B/jour, exposition USDT √† BTC ~5% selon attestations publiques. √Ä titre illustratif.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECTION 6 ‚Äî WINDOW ============ -->
+<section id="window">
+  <div class="container-wide">
+    <div style="max-width: 760px; margin: 0 auto;">
+      <h2><span class="section-num">06 ‚Äî La fen√™tre d'action</span>Combien de temps faut-il pour migrer Bitcoin ? Plus que ce qu'il nous reste.</h2>
+      <p class="intro">
+        C'est la question qui devrait dominer toutes les conversations sur Bitcoin en 2026 ‚Äî et qu'on n'entend nulle part dans les m√©dias mainstream.
+      </p>
+
+      <p>
+        Migrer Bitcoin vers du post-quantique n'est pas un patch. C'est une refonte cryptographique de la couche fondatrice du protocole. Chaque √©tape prend des ann√©es :
+      </p>
+
+      <div style="font-family: var(--sans); margin: 32px 0; background: white; border: 1px solid var(--border); padding: 24px;">
+        <div style="display: grid; grid-template-columns: 1fr auto; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--border);">
+          <div><strong>Finalisation BIP-360 (P2QRH)</strong><br><span style="color: var(--text-muted); font-size: 14px;">Choix du sch√©ma PQC, param√®tres, audit.</span></div>
+          <div style="font-family: var(--mono); font-weight: 700; color: var(--danger);">1-2 ans</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr auto; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--border);">
+          <div><strong>Activation soft fork ou hard fork</strong><br><span style="color: var(--text-muted); font-size: 14px;">R√©f√©rence : SegWit a pris ~2 ans de proposition √† activation.</span></div>
+          <div style="font-family: var(--mono); font-weight: 700; color: var(--danger);">2-3 ans</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr auto; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--border);">
+          <div><strong>Adoption wallets, exchanges, custodians</strong><br><span style="color: var(--text-muted); font-size: 14px;">Mise √† jour des hardware wallets, int√©gration custodian, support API.</span></div>
+          <div style="font-family: var(--mono); font-weight: 700; color: var(--danger);">1-2 ans</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr auto; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--border);">
+          <div><strong>Migration UTXO active des d√©tenteurs</strong><br><span style="color: var(--text-muted); font-size: 14px;">Chaque d√©tenteur doit signer pour transf√©rer vers PQC. Long tail in√©vitable.</span></div>
+          <div style="font-family: var(--mono); font-weight: 700; color: var(--danger);">5-10 ans</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr auto; gap: 16px; padding: 12px 0;">
+          <div><strong>Coins dormants / oubli√©s / perdus</strong><br><span style="color: var(--text-muted); font-size: 14px;">Satoshi, wallets perdus, h√©ritages bloqu√©s : jamais migr√©s.</span></div>
+          <div style="font-family: var(--mono); font-weight: 700; color: #7C0A02;">Jamais</div>
+        </div>
+      </div>
+
+      <p>
+        <strong>Total r√©aliste si on d√©marre vraiment maintenant (2026) : migration "safe" entre 2034 et 2036.</strong>
+      </p>
+
+      <p>
+        Si on attend 5 ans : migration repouss√©e √† 2039-2041.
+      </p>
+
+      <p>
+        Compare ces dates au mod√®le CRQC ci-dessus. Dans le sc√©nario central (CRQC ~2034), m√™me en d√©marrant maintenant, on est en course serr√©e. Dans le sc√©nario agressif (CRQC ~2030), <strong>la migration n'a aucune chance d'√™tre finie √† temps</strong>.
+      </p>
+    </div>
+
+    <div class="interactive-panel">
+      <div class="panel-title">Mod√®le 4 ‚Äî La course migration vs CRQC</div>
+      <div class="panel-subtitle">D√©cale le d√©marrage de la migration et regarde la zone rouge ‚Äî l'√©cart entre arriv√©e du CRQC et migration achev√©e.</div>
+
+      <div class="controls">
+        <div class="control">
+          <label>Ann√©e de d√©marrage migration s√©rieuse <span class="value" id="start-val">2026</span></label>
+          <input type="range" id="start-slider" min="2026" max="2032" step="1" value="2026" oninput="updateMigration()">
+          <div class="help">Ann√©e o√π la communaut√© Bitcoin active r√©ellement le passage au PQC (BIP-360 finalis√©, fork activ√©).</div>
+        </div>
+        <div class="control">
+          <label>Sc√©nario CRQC <span class="value" id="scenario-val">Central</span></label>
+          <input type="range" id="scenario-slider" min="0" max="2" step="1" value="1" oninput="updateMigration()">
+          <div class="help">0 = Conservateur, 1 = Central, 2 = Agressif.</div>
+        </div>
+      </div>
+
+      <div id="migration-chart" class="chart-container"></div>
+      <div class="chart-caption">La zone rouge repr√©sente l'√©cart entre la probabilit√© d'apparition du CRQC et le pourcentage de l'√©cosyst√®me migr√©. Plus elle est large, plus le risque de perte massive est r√©el.</div>
+
+      <div class="result-box">
+        <div class="result-line">
+          <div class="result-label">% migr√© quand P(CRQC) atteint 50%</div>
+          <div class="result-value" id="migrated-at-50">62%</div>
+        </div>
+        <div class="result-line">
+          <div class="result-label">BTC potentiellement expos√©s √† l'attaque</div>
+          <div class="result-value" id="exposed-btc">7,5 M BTC</div>
+        </div>
+        <div class="result-line">
+          <div class="result-label">Verdict</div>
+          <div class="result-value" id="verdict">√Ä risque</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECTION 7 ‚Äî CTA ============ -->
+<section id="cta" class="final-cta">
+  <div class="container">
+    <h2 style="color: white; margin-bottom: 32px;"><span class="section-num" style="color: #888;">07 ‚Äî L'appel</span>Tous les acteurs. En m√™me temps. Maintenant.</h2>
+
+    <p>
+      Il n'existe pas de bouton magique. Personne ne peut r√©soudre √ßa seul. Ni les d√©veloppeurs Bitcoin Core. Ni les r√©gulateurs. Ni BlackRock. Ni toi en tant que d√©tenteur. Le risque quantique sur Bitcoin a une caract√©ristique politiquement inconfortable : il <strong>n√©cessite une coordination simultan√©e</strong> de tous les acteurs de l'√©cosyst√®me. Et cette coordination doit s'enclencher dans une fen√™tre qui se ferme.
+    </p>
+  </div>
+
+  <div class="container" style="max-width: 1080px; margin-top: 48px;">
+    <div class="actors-grid">
+      <div class="actor-card">
+        <h4>D√©veloppeurs Bitcoin Core</h4>
+        <p>Finaliser et activer BIP-360 (ou √©quivalent) sans attendre un consensus parfait. Le co√ªt d'un sch√©ma PQC l√©g√®rement sous-optimal est n√©gligeable face au co√ªt de l'inaction.</p>
+      </div>
+      <div class="actor-card">
+        <h4>Mineurs</h4>
+        <p>Signaler le support des soft forks PQC d√®s leur disponibilit√©. Ne pas tergiverser sur les fees marginalement plus √©lev√©s des signatures post-quantiques.</p>
+      </div>
+      <div class="actor-card">
+        <h4>Exchanges & custodians</h4>
+        <p>Coinbase, Binance, Kraken, et chaque PSCA europ√©en sous MiCA : mettre √† jour les syst√®mes de signature, migrer activement les coins en custody, et communiquer aux clients.</p>
+      </div>
+      <div class="actor-card">
+        <h4>R√©gulateurs</h4>
+        <p>NIST a fait son travail (standards PQC en 2024). √Ä l'ESMA, l'AMF, l'ACPR, la BaFin de suivre : int√©grer la r√©silience post-quantique dans les exigences MiCA et DORA. Pas en 2030. En 2026-2027.</p>
+      </div>
+      <div class="actor-card">
+        <h4>Institutionnels & ETFs</h4>
+        <p>BlackRock, Fidelity, MicroStrategy et tout d√©tenteur de >1 000 BTC ont une responsabilit√© fiduciaire de migrer d√®s que la couche protocolaire le permet, et de pousser publiquement pour que √ßa arrive vite.</p>
+      </div>
+      <div class="actor-card">
+        <h4>Recherche acad√©mique</h4>
+        <p>Continuer √† raffiner les estimations (qubits n√©cessaires, tol√©rance d'erreur, temps d'attaque) ‚Äî pas pour rassurer, mais pour donner une vraie carte √† l'√©cosyst√®me.</p>
+      </div>
+      <div class="actor-card">
+        <h4>D√©tenteurs individuels</h4>
+        <p>Comprendre que "mes coins sont sur une adresse non-r√©utilis√©e donc je suis safe" n'est vrai que jusqu'√† ta prochaine transaction. Et que cette protection s'√©vanouit le jour o√π le CRQC existe.</p>
+      </div>
+      <div class="actor-card">
+        <h4>M√©dias et leaders d'opinion</h4>
+        <p>Arr√™ter de pr√©senter le risque quantique comme un d√©bat de salon pour cryptographes. C'est une question de calendrier, et le calendrier presse.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="container" style="margin-top: 48px;">
+    <p>
+      Bitcoin a surv√©cu √† Mt Gox, au fork Cash, √† FTX, √† la Chine, √† dix hivers et autant de bulls. Il peut survivre au quantique. <strong>√Ä une condition, et une seule : que tout l'√©cosyst√®me s'active en m√™me temps. Maintenant.</strong>
+    </p>
+    <p>
+      Le quantique ne nous attendra pas. Il faudra √™tre pr√™t avant lui. Et ce "avant" ne se compte plus en d√©cennies. Il se compte en ann√©es. <strong>Huit dans le sc√©nario le plus optimiste. Trois dans le sc√©nario agressif.</strong>
+    </p>
+    <p>
+      Chaque mois d'attente d√©place m√©caniquement un pan du supply de la zone "g√©rable" vers la zone "catastrophique". <strong>Il n'y a pas de neutralit√© possible. Ne rien faire, c'est choisir la cascade.</strong>
+    </p>
+    <div class="urgent-line">La fen√™tre se ferme. √Ä nous de l'utiliser ‚Äî pendant qu'elle est encore ouverte.</div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="container">
+    <h4>Sources & lectures</h4>
+    <ul>
+      <li>Roetteler, Naehrig, Svore, Lauter (2017) ‚Äî <em>Quantum resource estimates for computing elliptic curve discrete logarithms</em></li>
+      <li>Webber et al. (2022) ‚Äî <em>The impact of hardware specifications on reaching quantum advantage in the fault tolerant regime</em></li>
+      <li>Gidney (Google, 2025) ‚Äî Estimations r√©vis√©es pour Shor sur RSA-2048</li>
+      <li>DeepMind (2024) ‚Äî <em>AlphaQubit : Learning high-accuracy decoders for quantum error correction</em>, Nature</li>
+      <li>NIST (2024) ‚Äî Standards Post-Quantum Cryptography : ML-KEM (FIPS 203), ML-DSA (FIPS 204), SLH-DSA (FIPS 205)</li>
+      <li>Hunter Beast (2024-2026) ‚Äî BIP-360 / P2QRH (Pay to Quantum Resistant Hash)</li>
+      <li>Sergio Demian Lerner ‚Äî Patoshi pattern et estimation des bitcoins de Satoshi</li>
+      <li>Mosca (2018) ‚Äî <em>Cybersecurity in an era with quantum computers : will we be ready ?</em></li>
+    </ul>
+    <p style="margin-top: 32px; font-size: 12px; color: #666;">
+      Article publi√© en avril 2026. Les estimations chiffr√©es s'appuient sur les publications acad√©miques et les roadmaps publiques connues √† cette date. Le mod√®le interactif est simplifi√© √† des fins p√©dagogiques ‚Äî l'incertitude r√©elle sur les param√®tres reste √©lev√©e. Aucun conseil financier.
+    </p>
+  </div>
+</footer>
+
+<script>
+// ============ MODEL CONSTANTS ============
+const Q_THRESHOLD = 2330;
+const VULNERABLE_BTC = 5_000_000;
+const TOTAL_BTC_2026 = 19_700_000;
+const DAILY_VOLUME_USD = 30_000_000_000;
+const USDT_AUM = 140_000_000_000;
+const USDT_BTC_EXPOSURE = 0.05;
+const TOTAL_CRYPTO_CAP = 4_000_000_000_000;
+
+// ============ SCENARIO PRESETS ============
+const PRESETS = {
+  conservative: { tau: 2.0, alpha: 0.0, q0: 20 },
+  central:      { tau: 1.5, alpha: 0.15, q0: 20 },
+  aggressive:   { tau: 1.0, alpha: 0.4, q0: 20 }
+};
+
+// ============ MODEL FUNCTIONS ============
+function computeCRQCYear(tau, alpha, q0) {
+  const targetLog2 = Math.log2(Q_THRESHOLD / q0);
+  if (alpha <= 0.0001) {
+    return 2026 + targetLog2 * tau;
+  }
+  // Solve: targetLog2 * tau = s + alpha*s¬≤/2
+  const a = alpha / 2;
+  const b = 1;
+  const c = -targetLog2 * tau;
+  const s = (-b + Math.sqrt(b * b - 4 * a * c)) / (2 * a);
+  return 2026 + s;
+}
+
+function qubitGrowth(tau, alpha, q0, startYear, endYear) {
+  const years = [];
+  const qubits = [];
+  for (let t = startYear; t <= endYear; t += 0.25) {
+    const s = t - 2026;
+    const exp = (s + alpha * s * s / 2) / tau;
+    years.push(t);
+    qubits.push(q0 * Math.pow(2, exp));
+  }
+  return { years, qubits };
+}
+
+function logisticCDF(t, t_median, k) {
+  return 1 / (1 + Math.exp(-k * (t - t_median)));
+}
+
+function migrationProgress(t, startYear) {
+  const x = (t - startYear - 5) / 1.8;
+  return 0.95 / (1 + Math.exp(-x));
+}
+
+function cascadeImpact(initialPrice, dumpPct, days) {
+  const dumpedBTC = VULNERABLE_BTC * dumpPct;
+  const totalDumpUSD = dumpedBTC * initialPrice;
+  const dailyDumpUSD = totalDumpUSD / days;
+  const volumeRatio = dailyDumpUSD / DAILY_VOLUME_USD;
+
+  // Kyle's lambda style impact + reflexivity
+  const lambda = 0.18;
+  const baseImpact = lambda * volumeRatio * Math.sqrt(days);
+  const reflexivityMultiplier = 1.6 + 0.5 * dumpPct;
+  let finalImpact = baseImpact * reflexivityMultiplier;
+  finalImpact = Math.min(0.95, Math.max(0.05, finalImpact));
+
+  const finalPrice = initialPrice * (1 - finalImpact);
+
+  // USDT depeg model
+  const reserveLossPct = USDT_BTC_EXPOSURE * finalImpact;
+  const redemptionStress = 1 + 4 * finalImpact;
+  const usdtDepeg = Math.min(0.32, 0.06 * redemptionStress * finalImpact + reserveLossPct);
+
+  // Total crypto cap loss (BTC ~30% of cap, but ETH/SOL/etc also hit ~75% of BTC magnitude)
+  const ethImpact = finalImpact * 0.85;
+  const totalCapLoss = TOTAL_CRYPTO_CAP * (0.35 * finalImpact + 0.55 * ethImpact + 0.10 * (finalImpact * 0.7));
+
+  return { finalPrice, pctDrop: finalImpact, usdtDepeg, totalCapLoss };
+}
+
+// ============ FORMATTING ============
+function fmt(n) {
+  if (n >= 1e12) return '$' + (n / 1e12).toFixed(1).replace('.', ',') + ' T';
+  if (n >= 1e9) return '$' + (n / 1e9).toFixed(0) + ' Md';
+  if (n >= 1e6) return '$' + (n / 1e6).toFixed(0) + ' M';
+  if (n >= 1e3) return '$' + (n / 1e3).toFixed(0) + 'k';
+  return '$' + Math.round(n);
+}
+
+function fmtPrice(n) {
+  if (n >= 1000) return '$' + (n / 1000).toFixed(n >= 100000 ? 0 : 1).replace('.', ',') + 'k';
+  return '$' + Math.round(n);
+}
+
+function fmtBTC(n) {
+  if (n >= 1e6) return (n / 1e6).toFixed(1).replace('.', ',') + ' M BTC';
+  if (n >= 1e3) return (n / 1e3).toFixed(0) + 'k BTC';
+  return Math.round(n) + ' BTC';
+}
+
+// ============ CHART 1 ‚Äî QUBIT GROWTH ============
+function plotQubitGrowth() {
+  const tau = parseFloat(document.getElementById('tau-slider').value);
+  const alpha = parseFloat(document.getElementById('alpha-slider').value);
+  const q0 = parseFloat(document.getElementById('q0-slider').value);
+
+  const data = qubitGrowth(tau, alpha, q0, 2026, 2050);
+
+  // Reference scenarios
+  const conservative = qubitGrowth(2.0, 0.0, 20, 2026, 2050);
+  const aggressive = qubitGrowth(1.0, 0.4, 20, 2026, 2050);
+
+  const trace1 = {
+    x: data.years,
+    y: data.qubits,
+    type: 'scatter',
+    mode: 'lines',
+    name: 'Ton sc√©nario',
+    line: { color: '#DC2626', width: 4 }
+  };
+
+  const trace2 = {
+    x: conservative.years,
+    y: conservative.qubits,
+    type: 'scatter',
+    mode: 'lines',
+    name: 'Conservateur (r√©f√©rence)',
+    line: { color: '#16A34A', width: 1.5, dash: 'dot' }
+  };
+
+  const trace3 = {
+    x: aggressive.years,
+    y: aggressive.qubits,
+    type: 'scatter',
+    mode: 'lines',
+    name: 'Agressif (r√©f√©rence)',
+    line: { color: '#7C0A02', width: 1.5, dash: 'dot' }
+  };
+
+  const threshold = {
+    x: [2026, 2050],
+    y: [Q_THRESHOLD, Q_THRESHOLD],
+    type: 'scatter',
+    mode: 'lines',
+    name: 'Seuil CRQC (2 330)',
+    line: { color: '#000', width: 2, dash: 'dash' }
+  };
+
+  const layout = {
+    margin: { t: 20, r: 20, b: 50, l: 70 },
+    xaxis: { title: 'Ann√©e', tickformat: 'd', range: [2026, 2050], gridcolor: '#EEE' },
+    yaxis: { title: 'Qubits logiques (√©chelle log)', type: 'log', range: [Math.log10(5), Math.log10(1e7)], gridcolor: '#EEE' },
+    plot_bgcolor: '#FAFAF7',
+    paper_bgcolor: '#FFF',
+    font: { family: 'Inter, system-ui, sans-serif', size: 13 },
+    legend: { orientation: 'h', y: -0.2 },
+    hovermode: 'x unified'
+  };
+
+  Plotly.newPlot('qubit-chart', [conservative, aggressive, trace1, threshold].map((t, i) => i < 2 ? trace2 : t).filter((_, i) => true), layout, { responsive: true, displayModeBar: false });
+  Plotly.react('qubit-chart', [trace2, trace3, trace1, threshold], layout, { responsive: true, displayModeBar: false });
+
+  const crqcYear = computeCRQCYear(tau, alpha, q0);
+  document.getElementById('crqc-year').textContent = Math.round(crqcYear);
+  const yearsLeft = Math.round(crqcYear - 2026);
+  document.getElementById('crqc-years-left').textContent = yearsLeft + ' ans';
+  document.getElementById('crqc-years-left').className = 'result-value ' + (yearsLeft < 6 ? '' : (yearsLeft < 10 ? 'warning' : 'positive'));
+}
+
+// ============ CHART 2 ‚Äî PROBABILITY ============
+function plotProbability() {
+  const years = [];
+  for (let t = 2026; t <= 2050; t += 0.25) years.push(t);
+
+  const conservative = years.map(t => logisticCDF(t, 2040, 0.30));
+  const central = years.map(t => logisticCDF(t, 2034, 0.40));
+  const aggressive = years.map(t => logisticCDF(t, 2030, 0.55));
+
+  const layout = {
+    margin: { t: 20, r: 20, b: 50, l: 60 },
+    xaxis: { title: 'Ann√©e', tickformat: 'd', range: [2026, 2050], gridcolor: '#EEE' },
+    yaxis: { title: 'P(CRQC ‚â§ ann√©e t)', range: [0, 1], gridcolor: '#EEE', tickformat: '.0%' },
+    plot_bgcolor: '#FAFAF7',
+    paper_bgcolor: '#FFF',
+    font: { family: 'Inter, system-ui, sans-serif', size: 13 },
+    legend: { orientation: 'h', y: -0.2 },
+    hovermode: 'x unified',
+    shapes: [
+      { type: 'line', x0: 2026, x1: 2050, y0: 0.5, y1: 0.5, line: { color: '#999', width: 1, dash: 'dot' } }
+    ]
+  };
+
+  Plotly.newPlot('probability-chart', [
+    { x: years, y: conservative, type: 'scatter', mode: 'lines', name: 'Conservateur', line: { color: '#16A34A', width: 3 } },
+    { x: years, y: central, type: 'scatter', mode: 'lines', name: 'Central', line: { color: '#F59E0B', width: 3 } },
+    { x: years, y: aggressive, type: 'scatter', mode: 'lines', name: 'Agressif', line: { color: '#DC2626', width: 3 } }
+  ], layout, { responsive: true, displayModeBar: false });
+}
+
+// ============ CHART 3 ‚Äî MIGRATION ============
+function plotMigration() {
+  const startYear = parseFloat(document.getElementById('start-slider').value);
+  const scenarioIdx = parseInt(document.getElementById('scenario-slider').value);
+
+  const scenarioParams = [
+    { name: 'Conservateur', t_med: 2040, k: 0.30, color: '#16A34A' },
+    { name: 'Central',      t_med: 2034, k: 0.40, color: '#F59E0B' },
+    { name: 'Agressif',     t_med: 2030, k: 0.55, color: '#DC2626' }
+  ];
+  const sc = scenarioParams[scenarioIdx];
+
+  document.getElementById('scenario-val').textContent = sc.name;
+  document.getElementById('start-val').textContent = startYear;
+
+  const years = [];
+  for (let t = 2026; t <= 2050; t += 0.25) years.push(t);
+
+  const crqcCurve = years.map(t => logisticCDF(t, sc.t_med, sc.k));
+  const migrationCurve = years.map(t => migrationProgress(t, startYear));
+  const dangerZone = years.map((t, i) => Math.max(0, crqcCurve[i] - migrationCurve[i]));
+
+  const layout = {
+    margin: { t: 20, r: 20, b: 50, l: 60 },
+    xaxis: { title: 'Ann√©e', tickformat: 'd', range: [2026, 2050], gridcolor: '#EEE' },
+    yaxis: { title: 'Probabilit√© / Progression', range: [0, 1], gridcolor: '#EEE', tickformat: '.0%' },
+    plot_bgcolor: '#FAFAF7',
+    paper_bgcolor: '#FFF',
+    font: { family: 'Inter, system-ui, sans-serif', size: 13 },
+    legend: { orientation: 'h', y: -0.2 },
+    hovermode: 'x unified'
+  };
+
+  Plotly.newPlot('migration-chart', [
+    {
+      x: years, y: dangerZone, type: 'scatter', mode: 'lines',
+      name: 'Zone de risque (CRQC ‚àí Migration)',
+      fill: 'tozeroy',
+      line: { color: 'rgba(220, 38, 38, 0.4)', width: 0 },
+      fillcolor: 'rgba(220, 38, 38, 0.25)'
+    },
+    {
+      x: years, y: crqcCurve, type: 'scatter', mode: 'lines',
+      name: 'P(CRQC) ‚Äî ' + sc.name,
+      line: { color: sc.color, width: 3 }
+    },
+    {
+      x: years, y: migrationCurve, type: 'scatter', mode: 'lines',
+      name: '% migr√© PQC',
+      line: { color: '#2563EB', width: 3 }
+    }
+  ], layout, { responsive: true, displayModeBar: false });
+
+  // Find year when P(CRQC) = 0.5
+  let yearAt50 = null;
+  for (let i = 0; i < years.length; i++) {
+    if (crqcCurve[i] >= 0.5) { yearAt50 = years[i]; break; }
+  }
+  if (yearAt50) {
+    const migratedAt50 = migrationProgress(yearAt50, startYear);
+    const exposedBTC = TOTAL_BTC_2026 * (1 - migratedAt50);
+    document.getElementById('migrated-at-50').textContent = Math.round(migratedAt50 * 100) + '%';
+    document.getElementById('exposed-btc').textContent = (exposedBTC / 1e6).toFixed(1).replace('.', ',') + ' M BTC';
+    const verdict = migratedAt50 > 0.85 ? 'Ma√Ætris√©' : (migratedAt50 > 0.6 ? '√Ä risque' : 'Catastrophique');
+    const vEl = document.getElementById('verdict');
+    vEl.textContent = verdict;
+    vEl.className = 'result-value ' + (verdict === 'Ma√Ætris√©' ? 'positive' : (verdict === '√Ä risque' ? 'warning' : ''));
+  }
+}
+
+// ============ CASCADE SIMULATOR ============
+function updateCascade() {
+  const price = parseFloat(document.getElementById('price-slider').value);
+  const dump = parseFloat(document.getElementById('dump-slider').value) / 100;
+  const days = parseFloat(document.getElementById('days-slider').value);
+
+  document.getElementById('price-val').textContent = fmtPrice(price);
+  document.getElementById('dump-val').textContent = Math.round(dump * 100) + '%';
+  document.getElementById('days-val').textContent = days + (days > 1 ? ' jours' : ' jour');
+
+  const r = cascadeImpact(price, dump, days);
+
+  document.getElementById('final-price').textContent = fmtPrice(r.finalPrice);
+  document.getElementById('pct-drop').textContent = '‚àí' + Math.round(r.pctDrop * 100) + '%';
+  document.getElementById('usdt-depeg').textContent = '‚àí' + Math.round(r.usdtDepeg * 100) + '%';
+  document.getElementById('total-loss').textContent = fmt(r.totalCapLoss);
+}
+
+// ============ MODEL UPDATE ============
+function updateModel() {
+  const tau = parseFloat(document.getElementById('tau-slider').value);
+  const alpha = parseFloat(document.getElementById('alpha-slider').value);
+  const q0 = parseFloat(document.getElementById('q0-slider').value);
+
+  document.getElementById('tau-val').textContent = tau.toFixed(1).replace('.', ',') + ' ans';
+  document.getElementById('alpha-val').textContent = alpha.toFixed(2).replace('.', ',');
+  document.getElementById('q0-val').textContent = Math.round(q0);
+
+  // Clear preset highlight if user manually changes
+  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+  for (const [name, p] of Object.entries(PRESETS)) {
+    if (Math.abs(p.tau - tau) < 0.05 && Math.abs(p.alpha - alpha) < 0.02 && Math.abs(p.q0 - q0) < 1) {
+      document.querySelector('.preset-' + name).classList.add('active');
+    }
+  }
+
+  plotQubitGrowth();
+}
+
+function setPreset(name) {
+  const p = PRESETS[name];
+  document.getElementById('tau-slider').value = p.tau;
+  document.getElementById('alpha-slider').value = p.alpha;
+  document.getElementById('q0-slider').value = p.q0;
+  updateModel();
+}
+
+function updateMigration() {
+  plotMigration();
+}
+
+// ============ HERO YEARS UPDATE ============
+function updateHero() {
+  const centralYear = computeCRQCYear(1.5, 0.15, 20);
+  document.getElementById('hero-years-central').textContent = Math.round(centralYear - 2026);
+}
+
+// ============ INIT ============
+window.addEventListener('load', () => {
+  updateHero();
+  updateModel();
+  plotProbability();
+  updateMigration();
+  updateCascade();
+});
+
+window.addEventListener('resize', () => {
+  Plotly.Plots.resize('qubit-chart');
+  Plotly.Plots.resize('probability-chart');
+  Plotly.Plots.resize('migration-chart');
+});
+</script>
+
+</body>
+</html>
